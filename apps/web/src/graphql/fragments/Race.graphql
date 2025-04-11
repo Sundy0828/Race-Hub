@@ -1,0 +1,6 @@
+fragment raceFields on Race {
+  id
+  name
+  date
+  location
+}

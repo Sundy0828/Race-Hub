@@ -1,0 +1,8 @@
+query GetRaceWithResults($raceId: Int!) {
+  race(id: $raceId) {
+    ...raceFields
+    results {
+      ...resultFields
+    }
+  }
+}

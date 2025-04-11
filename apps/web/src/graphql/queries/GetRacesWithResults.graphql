@@ -1,0 +1,8 @@
+query GetRacesWithResults {
+  races {
+    ...raceFields
+    results {
+      ...resultFields
+    }
+  }
+}

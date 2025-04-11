@@ -1,0 +1,51 @@
+version: "3.8"
+services:
+  db:
+    build: ./apps/db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: race_hub_db
+    # volumes:
+    #   - ./db:/docker-entrypoint-initdb.d/
+    networks:
+      - racehub-network
+
+  backend:
+    build: ./apps/backend
+    ports:
+      - "4000:4000"
+    environment:
+      DATABASE_URL: postgres://admin:password@db:5432/race_hub_db
+      REDIS_URL: redis://redis:6379
+      # FIREBASE_PRIVATE_KEY: ${FIREBASE_PRIVATE_KEY}
+      # FIREBASE_CLIENT_EMAIL: ${FIREBASE_CLIENT_EMAIL}
+      # FIREBASE_PROJECT_ID: ${FIREBASE_PROJECT_ID}
+    depends_on:
+      - db
+    networks:
+      - racehub-network
+
+  # frontend:
+  #   build: ./apps/frontend
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     REACT_APP_GRAPHQL_API: http://localhost:4000/graphql
+  #   depends_on:
+  #     - backend
+  #   networks:
+  #     - racehub-network
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    networks:
+      - racehub-network
+
+networks:
+  racehub-network:
+    driver: bridge

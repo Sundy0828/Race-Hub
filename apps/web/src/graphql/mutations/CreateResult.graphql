@@ -1,0 +1,5 @@
+mutation AddResult($raceId: Int!, $participant: String!, $time: Int!) {
+  addResult(raceId: $raceId, participant: $participant, time: $time) {
+    ...resultFields
+  }
+}

@@ -1,0 +1,5 @@
+fragment resultFields on Result {
+  id
+  participant
+  time
+}

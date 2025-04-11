@@ -1,0 +1,5 @@
+mutation CreateRace($name: String!, $date: String!, $location: String!) {
+  createRace(name: $name, date: $date, location: $location) {
+    ...raceFields
+  }
+}

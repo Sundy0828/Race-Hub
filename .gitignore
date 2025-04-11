@@ -1,0 +1,75 @@
+# Node.js and npm
+/node_modules/
+/**/node_modules/
+
+# Log files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Debug files
+.vscode/
+.idea/
+
+# Package lock files (optional: can be committed depending on project preferences)
+# package-lock.json (Uncomment if you want to ignore package-lock.json)
+# pnpm-lock.yaml (Uncomment if you want to ignore pnpm-lock.yaml)
+/pnpm-lock.yaml
+/package-lock.json
+/yarn.lock
+/**/pnpm-lock.yaml
+/**/package-lock.json
+/**/yarn.lock
+
+# React (create-react-app) build output
+/build/
+/**/build/
+
+# React Native build directories
+/android/build/
+/ios/build/
+/ios/Pods/
+/**/build/
+
+# Compiled JavaScript (from TypeScript)
+dist/
+/**/dist/
+/**/lib/
+
+# Postgres DB (local data and configurations)
+apps/*/db/data/
+/apps/*/db/migrations/
+/apps/*/db/seeds/
+apps/*/db/.env*
+
+# Environment variables (local configurations)
+.env
+.env.local
+.env.*.local
+*.env
+
+# TypeScript cache
+*.tsbuildinfo
+
+# IDE and OS files
+.DS_Store
+Thumbs.db
+*.swp
+
+# JetBrains IDEs (IntelliJ, WebStorm, etc.)
+.idea/
+
+# Next.js build and static files
+.next/
+/**/.next/
+
+# Other build output
+/out/
+/**/out/
+
+# Exclude other temporary folders
+/.eslintcache
+/.cache/
+/tmp/
+/logs/
