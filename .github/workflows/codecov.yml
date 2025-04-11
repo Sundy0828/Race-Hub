@@ -1,0 +1,107 @@
+name: Test All Apps
+
+on:
+  push:
+    paths:
+      - "apps/**"
+      - ".github/workflows/test-all-apps.yml"
+  pull_request:
+    paths:
+      - "apps/**"
+      - ".github/workflows/test-all-apps.yml"
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      node: ${{ steps.read-node.outputs.node }}
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Read Node.js version from .nvmrc
+        id: read-node
+        run: echo "node=$(cat .nvmrc)" >> $GITHUB_OUTPUT
+
+  web:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ needs.setup.outputs.node }}
+          cache: "pnpm"
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --recursive
+
+      - name: Build Web
+        run: pnpm --filter ./apps/web run build
+
+      - name: Test Web
+        run: pnpm --filter ./apps/web run test -- --coverage
+
+      - name: Upload Web Coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  backend:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ needs.setup.outputs.node }}
+          cache: "pnpm"
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --recursive
+
+      - name: Build Backend
+        run: pnpm --filter ./apps/backend run build
+
+      - name: Test Backend
+        run: pnpm --filter ./apps/backend run test -- --coverage
+
+      - name: Upload Backend Coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  mobile:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: ${{ needs.setup.outputs.node }}
+          cache: "pnpm"
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --recursive
+
+      - name: Build Mobile
+        run: pnpm --filter ./apps/mobile run build
+
+      - name: Test Mobile
+        run: pnpm --filter ./apps/mobile run test -- --coverage
+
+      - name: Upload Mobile Coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}

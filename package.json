@@ -10,7 +10,9 @@
     "start:backend": "docker-compose up -d",
     "stop:backend": "docker-compose down -v",
     "start": "pnpm start:backend && pnpm start:web",
-    "start:docker": "docker-compose up --build"
+    "start:docker": "docker-compose up --build",
+    "test": "pnpm -r run test",
+    "build": "pnpm -r run build"
   },
   "devDependencies": {
     "ts-node": "^10.9.2",
