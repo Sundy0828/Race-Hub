@@ -32,9 +32,13 @@
     "@graphql-codegen/typescript": "^4.1.6",
     "@graphql-codegen/typescript-operations": "^4.6.0",
     "@graphql-codegen/typescript-react-apollo": "^3.3.7",
+    "@typescript-eslint/eslint-plugin": "^8.29.1",
+    "@typescript-eslint/parser": "^8.29.1",
     "eslint": "^9.24.0",
     "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-typescript": "^18.0.0",
     "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
     "graphql-codegen-typescript-mock-data": "^3.8.0"
   },
   "scripts": {
@@ -46,9 +50,27 @@
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+      "eslint:recommended",
+      "plugin:react/recommended",
+      "plugin:react-hooks/recommended",
+      "plugin:@typescript-eslint/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "react",
+      "react-hooks",
+      "@typescript-eslint"
+    ],
+    "rules": {
+      "react/prop-types": "off",
+      "react/react-in-jsx-scope": "off",
+      "@typescript-eslint/explicit-module-boundary-types": "off"
+    },
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    }
   },
   "browserslist": {
     "production": [
