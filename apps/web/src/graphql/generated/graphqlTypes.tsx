@@ -74,7 +74,7 @@ export type Race = {
   id: Scalars["Int"]["output"];
   location: Scalars["String"]["output"];
   name: Scalars["String"]["output"];
-  results: Array<Result>;
+  results: Maybe<Array<Maybe<Result>>>;
 };
 
 export type Result = {

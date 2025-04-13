@@ -7,12 +7,9 @@
     "clean": "rimraf dist node_modules/.cache",
     "nuke": "pnpm run clean && rimraf node_modules",
     "start:web": "pnpm --filter ./apps/web run dev",
-    "start:backend": "docker-compose up -d",
-    "stop:backend": "docker-compose down -v",
-    "start": "pnpm start:backend && pnpm start:web",
     "start:docker": "docker-compose up --build",
-    "test": "pnpm -r run test",
-    "build": "pnpm -r run build"
+    "start": "docker-compose up --build && pnpm start:web",
+    "test": "pnpm -r run test"
   },
   "devDependencies": {
     "ts-node": "^10.9.2",

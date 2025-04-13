@@ -1,22 +1,29 @@
-FROM node:18
+# Use specific Node.js version as base
+FROM node:20.11.1
 
-# Install pnpm globally
-RUN npm install -g pnpm
+# Set working directory
+WORKDIR /app
 
-WORKDIR /
+# Upgrade npm to 10.9.0
+RUN npm install -g npm@10.9.0
 
-# Copy only dependency files first
+# Install specific pnpm version
+RUN npm install -g pnpm@9.12.3
+
+# Copy package manager files first (better Docker caching)
 COPY package.json ./
 
-# Install dependencies and cache node_modules layer
+# Install dependencies
 RUN pnpm install
 
-# Copy the rest of the app
+# Copy remaining app files
 COPY . .
 
 # Build the app
 RUN pnpm run build
 
+# Expose desired port (adjust as needed)
 EXPOSE 4000
 
+# Start the app
 CMD ["pnpm", "start"]

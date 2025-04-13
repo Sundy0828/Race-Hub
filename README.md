@@ -23,37 +23,48 @@ Race Hub is a backend service for organizing, managing, and analyzing race event
 
 ## 📦 Installation
 
-Make sure you have `pnpm`, Docker, and PostgreSQL running locally.
+Make sure you have `pnpm` and Docker running locally.
+
+### 📦 Dependency Versions
+
+This project is built and tested against the following versions:
+
+| Dependency | Version |
+| ---------- | ------- |
+| Node.js    | 20.11.1 |
+| npm        | 10.9.0  |
+| pnpm       | 9.12.3  |
+| GraphQL    | 16.10.0 |
+
+> 💡 You can check these versions using:
+>
+> ```bash
+> node -v
+> npm -v
+> pnpm -v
+> ```
+
+### Running Services
 
 ```bash
-# Install all dependencies
-pnpm install
+# Run backend
+pnpm start:docker
 
-# Build the project
-pnpm build
+# Run the web
+pnpm start:web
 
-# Run the app
+# Run all
 pnpm start
-```
-
-Or with Docker:
-
-```bash
-# Build the image
-docker build -t race-hub-backend .
-
-# Run the container
-docker run -p 4000:4000 race-hub-backend
 ```
 
 ## 📬 API Endpoints
 
 ### REST
 
-| Method | Endpoint         | Description               |
-|--------|------------------|---------------------------|
-| POST   | `/results`       | Upload single result      |
-| POST   | `/results/bulk`  | Upload multiple results   |
+| Method | Endpoint        | Description             |
+| ------ | --------------- | ----------------------- |
+| POST   | `/results`      | Upload single result    |
+| POST   | `/results/bulk` | Upload multiple results |
 
 ### GraphQL
 

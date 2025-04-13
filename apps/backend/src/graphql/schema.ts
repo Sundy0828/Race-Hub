@@ -6,7 +6,7 @@ export const typeDefs = gql`
     name: String!
     date: String!
     location: String!
-    results: [Result!]!
+    results: [Result]
   }
 
   type Result {
