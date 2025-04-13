@@ -1,5 +1,5 @@
 import { NetworkStatus, OperationVariables, useQuery } from "@apollo/client";
-import { GetRacesWithResultsDocument, Race } from "../generated/graphqlTypes";
+import { GetRacesDocument, Race } from "../generated/graphqlTypes";
 
 export type RacesResponse = {
   races: Race[] | undefined;
@@ -14,9 +14,9 @@ export type RacesResponse = {
 /**
  * @description Fetching all races with results.
  */
-export const useRacesWithResults = (): RacesResponse => {
+export const useRaces = (): RacesResponse => {
   const { data, error, loading, refetch, networkStatus } = useQuery(
-    GetRacesWithResultsDocument,
+    GetRacesDocument,
     {
       notifyOnNetworkStatusChange: true,
     }

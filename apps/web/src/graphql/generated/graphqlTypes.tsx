@@ -154,9 +154,9 @@ export type GetRaceWithResultsQuery = {
   };
 };
 
-export type GetRacesWithResultsQueryVariables = Exact<{ [key: string]: never }>;
+export type GetRacesQueryVariables = Exact<{ [key: string]: never }>;
 
-export type GetRacesWithResultsQuery = {
+export type GetRacesQuery = {
   __typename?: "Query";
   races: Array<{
     __typename?: "Race";
@@ -164,12 +164,6 @@ export type GetRacesWithResultsQuery = {
     name: string;
     date: string;
     location: string;
-    results: Array<{
-      __typename?: "Result";
-      id: number;
-      participant: string;
-      time: number;
-    }>;
   }>;
 };
 
@@ -299,49 +293,40 @@ export type GetRaceWithResultsQueryResult = Apollo.QueryResult<
   GetRaceWithResultsQuery,
   GetRaceWithResultsQueryVariables
 >;
-export const GetRacesWithResultsDocument = gql`
-  query GetRacesWithResults {
+export const GetRacesDocument = gql`
+  query GetRaces {
     races {
       ...raceFields
-      results {
-        ...resultFields
-      }
     }
   }
   ${RaceFieldsFragmentDoc}
-  ${ResultFieldsFragmentDoc}
 `;
-export function useGetRacesWithResultsQuery(
-  baseOptions?: Apollo.QueryHookOptions<
-    GetRacesWithResultsQuery,
-    GetRacesWithResultsQueryVariables
-  >,
+export function useGetRacesQuery(
+  baseOptions?: Apollo.QueryHookOptions<GetRacesQuery, GetRacesQueryVariables>,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<
-    GetRacesWithResultsQuery,
-    GetRacesWithResultsQueryVariables
-  >(GetRacesWithResultsDocument, options);
+  return Apollo.useQuery<GetRacesQuery, GetRacesQueryVariables>(
+    GetRacesDocument,
+    options,
+  );
 }
-export function useGetRacesWithResultsLazyQuery(
+export function useGetRacesLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    GetRacesWithResultsQuery,
-    GetRacesWithResultsQueryVariables
+    GetRacesQuery,
+    GetRacesQueryVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<
-    GetRacesWithResultsQuery,
-    GetRacesWithResultsQueryVariables
-  >(GetRacesWithResultsDocument, options);
+  return Apollo.useLazyQuery<GetRacesQuery, GetRacesQueryVariables>(
+    GetRacesDocument,
+    options,
+  );
 }
-export type GetRacesWithResultsQueryHookResult = ReturnType<
-  typeof useGetRacesWithResultsQuery
+export type GetRacesQueryHookResult = ReturnType<typeof useGetRacesQuery>;
+export type GetRacesLazyQueryHookResult = ReturnType<
+  typeof useGetRacesLazyQuery
 >;
-export type GetRacesWithResultsLazyQueryHookResult = ReturnType<
-  typeof useGetRacesWithResultsLazyQuery
->;
-export type GetRacesWithResultsQueryResult = Apollo.QueryResult<
-  GetRacesWithResultsQuery,
-  GetRacesWithResultsQueryVariables
+export type GetRacesQueryResult = Apollo.QueryResult<
+  GetRacesQuery,
+  GetRacesQueryVariables
 >;

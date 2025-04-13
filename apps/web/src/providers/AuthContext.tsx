@@ -11,7 +11,7 @@ import {
   signOut,
   User,
 } from "firebase/auth";
-import { app } from "../firebaseConfig"; // your initialized firebase app
+import { app } from "../firebaseConfig";
 
 const auth = getAuth(app);
 

@@ -1,7 +1,5 @@
 import React from "react";
 
-const Home = () => {
+export default function HomePageClient() {
   return <div>Welcome to the home Page!</div>;
-};
-
-export default Home;
+}

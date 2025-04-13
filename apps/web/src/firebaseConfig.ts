@@ -1,20 +1,30 @@
 import { initializeApp } from "firebase/app";
-import { getAnalytics, Analytics } from "firebase/analytics";
+import { getAnalytics, isSupported, Analytics } from "firebase/analytics";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAB4mlbdokhVczQrjbkUMRT7w1CQWKrp-0",
-  authDomain: "race-hub-23b63.firebaseapp.com",
-  projectId: "race-hub-23b63",
-  storageBucket: "race-hub-23b63.firebasestorage.app",
-  messagingSenderId: "31439031251",
-  appId: "1:31439031251:web:254ef2a8b3333dd6cfbd26",
-  measurementId: "G-HY507PMF1H",
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY!,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN!,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID!,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET!,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID!,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID!,
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
 // Initialize Analytics (only if supported)
-const analytics: Analytics = getAnalytics(app);
+let analytics: Analytics | undefined;
+
+isSupported()
+  .then((supported) => {
+    if (supported) {
+      analytics = getAnalytics(app);
+    }
+  })
+  .catch((err) => {
+    console.warn("Analytics not supported:", err);
+  });
 
 export { app, analytics };
