@@ -1,0 +1,5 @@
+query GetRacesByYear($year: Int!) {
+  racesByYear(year: $year) {
+    ...raceFields
+  }
+}

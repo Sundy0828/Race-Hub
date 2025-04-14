@@ -1,17 +1,16 @@
-// src/app/home/page.tsx
-import HomePageClient from "@/client/home/HomePageClient";
-import { seoMeta } from "./seo";
+import AboutPageClient from "@/client/about/AboutPageClient";
 import type { Metadata } from "next";
+import { seoMeta } from "../seo";
 
 export const metadata: Metadata = seoMeta(
-  "Home",
+  "About",
   "Welcome to the ultimate race tracking site. Discover races, results, and rankings across various events."
 );
 
-export default function HomePage() {
+export default function AboutPage() {
   return (
     <div>
-      <HomePageClient />
+      <AboutPageClient />
     </div>
   );
 }

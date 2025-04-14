@@ -6,6 +6,10 @@ export class RaceService {
     return RaceDomain.getAllRaces(context);
   }
 
+  async getAllRacesByYear(year: string, context: Context) {
+    return RaceDomain.getAllRacesByYear(year, context);
+  }
+
   async getRaceById(id: string, context: Context) {
     const parsedId = parseInt(id);
     if (isNaN(parsedId)) {

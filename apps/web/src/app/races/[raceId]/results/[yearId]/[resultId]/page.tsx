@@ -1,7 +1,7 @@
 import { seoMeta } from "@/app/seo";
 import RacePageClient from "@/client/races/race/RacePageClient";
 import { GetRaceWithResultsDocument } from "@/graphql/generated/graphqlTypes";
-import { getClient } from "@/providers/apolloClient";
+import { getClient } from "@/providers/apollo/apolloClient";
 import type { Metadata } from "next";
 
 type Props = {
@@ -22,10 +22,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 
   const title = data?.race?.name ?? "Race Results";
-  return {
-    title,
-    description: `Results for ${title}`,
-  };
+
+  return seoMeta(title, `Results for ${title}`);
 }
 
 export default function SpecificResultPage({ params }: Props) {

@@ -19,6 +19,7 @@ export const typeDefs = gql`
   type Query {
     races: [Race!]!
     race(id: Int!): Race
+    racesByYear(year: Int!): [Race!]!
   }
 
   type Mutation {

@@ -1,7 +1,7 @@
 // src/providers/ApolloWrapper.tsx
 import React from "react";
 import { ApolloProvider } from "@apollo/client";
-import { useFirebaseAuth } from "./AuthContext";
+import { useFirebaseAuth } from "../auth/AuthContext";
 import { createApolloClient } from "./createApolloClient";
 
 interface Props {

@@ -24,6 +24,7 @@ export const aQuery = (overrides?: Partial<Query>): { __typename: 'Query' } & Qu
         __typename: 'Query',
         race: overrides && overrides.hasOwnProperty('race') ? overrides.race! : aRace(),
         races: overrides && overrides.hasOwnProperty('races') ? overrides.races! : [],
+        racesByYear: overrides && overrides.hasOwnProperty('racesByYear') ? overrides.racesByYear! : [],
     };
 };
 

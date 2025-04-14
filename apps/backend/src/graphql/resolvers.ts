@@ -13,6 +13,13 @@ export const resolvers = {
     race: async (_parent: any, args: { id: string }, context: Context) => {
       return raceService.getRaceById(args.id, context);
     },
+    racesByYear: async (
+      _parent: any,
+      args: { year: string },
+      context: Context
+    ) => {
+      return raceService.getAllRacesByYear(args.year, context);
+    },
   },
   Mutation: {
     createRace: async (

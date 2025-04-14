@@ -1,6 +1,6 @@
 import { logEvent } from "firebase/analytics";
 import { analytics } from "../firebaseConfig"; // adjust the import to your setup
-import { useFirebaseAuth } from "../providers/AuthContext"; // adjust based on your actual auth hook
+import { useFirebaseAuth } from "../providers/auth/AuthContext"; // adjust based on your actual auth hook
 
 type PageViewParams = {
   page: string;

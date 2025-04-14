@@ -62,10 +62,15 @@ export type Query = {
   __typename?: "Query";
   race: Maybe<Race>;
   races: Array<Race>;
+  racesByYear: Array<Race>;
 };
 
 export type QueryRaceArgs = {
   id: Scalars["Int"]["input"];
+};
+
+export type QueryRacesByYearArgs = {
+  year: Scalars["Int"]["input"];
 };
 
 export type Race = {
@@ -159,6 +164,21 @@ export type GetRacesQueryVariables = Exact<{ [key: string]: never }>;
 export type GetRacesQuery = {
   __typename?: "Query";
   races: Array<{
+    __typename?: "Race";
+    id: number;
+    name: string;
+    date: string;
+    location: string;
+  }>;
+};
+
+export type GetRacesByYearQueryVariables = Exact<{
+  year: Scalars["Int"]["input"];
+}>;
+
+export type GetRacesByYearQuery = {
+  __typename?: "Query";
+  racesByYear: Array<{
     __typename?: "Race";
     id: number;
     name: string;
@@ -329,4 +349,46 @@ export type GetRacesLazyQueryHookResult = ReturnType<
 export type GetRacesQueryResult = Apollo.QueryResult<
   GetRacesQuery,
   GetRacesQueryVariables
+>;
+export const GetRacesByYearDocument = gql`
+  query GetRacesByYear($year: Int!) {
+    racesByYear(year: $year) {
+      ...raceFields
+    }
+  }
+  ${RaceFieldsFragmentDoc}
+`;
+export function useGetRacesByYearQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetRacesByYearQuery,
+    GetRacesByYearQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetRacesByYearQuery, GetRacesByYearQueryVariables>(
+    GetRacesByYearDocument,
+    options,
+  );
+}
+export function useGetRacesByYearLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetRacesByYearQuery,
+    GetRacesByYearQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetRacesByYearQuery, GetRacesByYearQueryVariables>(
+    GetRacesByYearDocument,
+    options,
+  );
+}
+export type GetRacesByYearQueryHookResult = ReturnType<
+  typeof useGetRacesByYearQuery
+>;
+export type GetRacesByYearLazyQueryHookResult = ReturnType<
+  typeof useGetRacesByYearLazyQuery
+>;
+export type GetRacesByYearQueryResult = Apollo.QueryResult<
+  GetRacesByYearQuery,
+  GetRacesByYearQueryVariables
 >;

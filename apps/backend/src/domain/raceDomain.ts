@@ -5,6 +5,10 @@ export const getAllRaces = async (context: Context) => {
   return RaceDao.getAllRaces(context);
 };
 
+export const getAllRacesByYear = async (year: string, context: Context) => {
+  return RaceDao.getAllRacesByYear(year, context);
+};
+
 export const getRaceById = async (id: number, context: Context) => {
   return RaceDao.getRaceById(id, context);
 };
