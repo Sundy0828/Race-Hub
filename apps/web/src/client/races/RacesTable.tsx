@@ -72,7 +72,16 @@ export default function RacesTable({ races }: Props) {
                   <TableCell>{race.name}</TableCell>
                   <TableCell>{race.location}</TableCell>
                   <TableCell>
-                    {new Date(race.date).toLocaleDateString()}
+                    {race.date
+                      ? new Date(Number(race.date)).toLocaleDateString(
+                          "en-US",
+                          {
+                            year: "numeric",
+                            month: "short",
+                            day: "numeric",
+                          }
+                        )
+                      : "Unknown"}
                   </TableCell>
                 </TableRow>
               ))}
