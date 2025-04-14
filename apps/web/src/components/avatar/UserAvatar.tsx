@@ -13,13 +13,16 @@ const getInitials = (displayName: string = "") => {
 type Props = {
   profileImgUrl?: string;
   displayName?: string;
+  className?: string;
 };
 
-const UserAvatar = ({ profileImgUrl, displayName }: Props) => {
+const UserAvatar = ({ profileImgUrl, displayName, className }: Props) => {
   const initials = getInitials(displayName);
 
   return (
-    <Avatar src={profileImgUrl}>{initials ? initials : <PersonIcon />}</Avatar>
+    <Avatar className={className} src={profileImgUrl}>
+      {initials ? initials : <PersonIcon />}
+    </Avatar>
   );
 };
 

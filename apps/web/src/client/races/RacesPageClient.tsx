@@ -6,12 +6,14 @@ import LoadingSpinner from "@/components/loading/LoadingSpinner";
 import ErrorState from "@/components/error/ErrorState";
 import { Box, Card, CardContent, Typography, Button } from "@mui/material";
 import router from "next/router";
+import { useFirebaseAuth } from "@/providers/auth/AuthContext";
 
 type Props = {
   yearId: number;
 };
 
 export default function RacesPageClient({ yearId }: Props) {
+  const { user } = useFirebaseAuth();
   const { races, racesLoading, racesError, racesRefetch } = useRaces();
 
   if (racesLoading) return <LoadingSpinner />;
@@ -25,18 +27,20 @@ export default function RacesPageClient({ yearId }: Props) {
         alignItems="center"
         height="60vh"
       >
-        <Card sx={{ minWidth: 275, textAlign: "center", p: 3 }}>
+        <Card>
           <CardContent>
             <Typography variant="h5" gutterBottom>
               No races have been created yet.
             </Typography>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => router.push("/races/create")}
-            >
-              Create a Race
-            </Button>
+            {user && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => router.push("/races/create")}
+              >
+                Create a Race
+              </Button>
+            )}
           </CardContent>
         </Card>
       </Box>

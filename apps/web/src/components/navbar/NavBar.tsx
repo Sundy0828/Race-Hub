@@ -34,7 +34,7 @@ function NavBar() {
 
   const isActive = (basePath: string) => {
     if (basePath === "/") return pathname === "/";
-    return pathname.startsWith(basePath);
+    return pathname.startsWith(`/{basePath}`);
   };
 
   const [isOpen, setIsOpen] = useState(false);
@@ -227,9 +227,15 @@ function NavBar() {
           onClose={togglePanel}
         >
           {isSignUp ? (
-            <SignUp onToggleForm={toggleForm} />
+            <SignUp
+              onCloseForm={() => setIsOpen(false)}
+              onToggleForm={toggleForm}
+            />
           ) : (
-            <SignIn onToggleForm={toggleForm} />
+            <SignIn
+              onCloseForm={() => setIsOpen(false)}
+              onToggleForm={toggleForm}
+            />
           )}
         </SlideOutPanel>
       </Container>
