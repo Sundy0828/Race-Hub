@@ -9,13 +9,33 @@
 *
 * for this file to be re-created
 */
-import { Mutation, Query, Race, Result } from './graphqlTypes';
+import { CreateRaceInput, CreateResultInput, Mutation, Query, Race, Result, UpdateRaceInput, UpdateResultInput } from './graphqlTypes';
+
+export const aCreateRaceInput = (overrides?: Partial<CreateRaceInput>): CreateRaceInput => {
+    return {
+        date: overrides && overrides.hasOwnProperty('date') ? overrides.date! : 'est',
+        location: overrides && overrides.hasOwnProperty('location') ? overrides.location! : 'quidem',
+        name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'modi',
+    };
+};
+
+export const aCreateResultInput = (overrides?: Partial<CreateResultInput>): CreateResultInput => {
+    return {
+        participant: overrides && overrides.hasOwnProperty('participant') ? overrides.participant! : 'ut',
+        raceId: overrides && overrides.hasOwnProperty('raceId') ? overrides.raceId! : 3789,
+        time: overrides && overrides.hasOwnProperty('time') ? overrides.time! : 5557,
+    };
+};
 
 export const aMutation = (overrides?: Partial<Mutation>): { __typename: 'Mutation' } & Mutation => {
     return {
         __typename: 'Mutation',
-        addResult: overrides && overrides.hasOwnProperty('addResult') ? overrides.addResult! : aResult(),
         createRace: overrides && overrides.hasOwnProperty('createRace') ? overrides.createRace! : aRace(),
+        createResult: overrides && overrides.hasOwnProperty('createResult') ? overrides.createResult! : aResult(),
+        deleteRace: overrides && overrides.hasOwnProperty('deleteRace') ? overrides.deleteRace! : false,
+        deleteResult: overrides && overrides.hasOwnProperty('deleteResult') ? overrides.deleteResult! : false,
+        updateRace: overrides && overrides.hasOwnProperty('updateRace') ? overrides.updateRace! : aRace(),
+        updateResult: overrides && overrides.hasOwnProperty('updateResult') ? overrides.updateResult! : aResult(),
     };
 };
 
@@ -25,6 +45,9 @@ export const aQuery = (overrides?: Partial<Query>): { __typename: 'Query' } & Qu
         race: overrides && overrides.hasOwnProperty('race') ? overrides.race! : aRace(),
         races: overrides && overrides.hasOwnProperty('races') ? overrides.races! : [],
         racesByYear: overrides && overrides.hasOwnProperty('racesByYear') ? overrides.racesByYear! : [],
+        result: overrides && overrides.hasOwnProperty('result') ? overrides.result! : aResult(),
+        resultByRaceId: overrides && overrides.hasOwnProperty('resultByRaceId') ? overrides.resultByRaceId! : [],
+        results: overrides && overrides.hasOwnProperty('results') ? overrides.results! : [],
     };
 };
 
@@ -46,5 +69,20 @@ export const aResult = (overrides?: Partial<Result>): { __typename: 'Result' } &
         participant: overrides && overrides.hasOwnProperty('participant') ? overrides.participant! : 'dolorem',
         race: overrides && overrides.hasOwnProperty('race') ? overrides.race! : aRace(),
         time: overrides && overrides.hasOwnProperty('time') ? overrides.time! : 2144,
+    };
+};
+
+export const anUpdateRaceInput = (overrides?: Partial<UpdateRaceInput>): UpdateRaceInput => {
+    return {
+        date: overrides && overrides.hasOwnProperty('date') ? overrides.date! : 'magnam',
+        location: overrides && overrides.hasOwnProperty('location') ? overrides.location! : 'recusandae',
+        name: overrides && overrides.hasOwnProperty('name') ? overrides.name! : 'debitis',
+    };
+};
+
+export const anUpdateResultInput = (overrides?: Partial<UpdateResultInput>): UpdateResultInput => {
+    return {
+        participant: overrides && overrides.hasOwnProperty('participant') ? overrides.participant! : 'atque',
+        time: overrides && overrides.hasOwnProperty('time') ? overrides.time! : 1788,
     };
 };

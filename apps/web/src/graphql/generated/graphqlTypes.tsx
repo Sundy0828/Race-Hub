@@ -40,22 +40,52 @@ export type Scalars = {
   Float: { input: number; output: number };
 };
 
-export type Mutation = {
-  __typename?: "Mutation";
-  addResult: Result;
-  createRace: Race;
+export type CreateRaceInput = {
+  date: Scalars["String"]["input"];
+  location: Scalars["String"]["input"];
+  name: Scalars["String"]["input"];
 };
 
-export type MutationAddResultArgs = {
+export type CreateResultInput = {
   participant: Scalars["String"]["input"];
   raceId: Scalars["Int"]["input"];
   time: Scalars["Int"]["input"];
 };
 
+export type Mutation = {
+  __typename?: "Mutation";
+  createRace: Race;
+  createResult: Result;
+  deleteRace: Scalars["Boolean"]["output"];
+  deleteResult: Scalars["Boolean"]["output"];
+  updateRace: Race;
+  updateResult: Result;
+};
+
 export type MutationCreateRaceArgs = {
-  date: Scalars["String"]["input"];
-  location: Scalars["String"]["input"];
-  name: Scalars["String"]["input"];
+  input: CreateRaceInput;
+};
+
+export type MutationCreateResultArgs = {
+  input: CreateResultInput;
+};
+
+export type MutationDeleteRaceArgs = {
+  id: Scalars["Int"]["input"];
+};
+
+export type MutationDeleteResultArgs = {
+  id: Scalars["Int"]["input"];
+};
+
+export type MutationUpdateRaceArgs = {
+  id: Scalars["Int"]["input"];
+  input: UpdateRaceInput;
+};
+
+export type MutationUpdateResultArgs = {
+  id: Scalars["Int"]["input"];
+  input: UpdateResultInput;
 };
 
 export type Query = {
@@ -63,6 +93,9 @@ export type Query = {
   race: Maybe<Race>;
   races: Array<Race>;
   racesByYear: Array<Race>;
+  result: Maybe<Result>;
+  resultByRaceId: Array<Result>;
+  results: Array<Result>;
 };
 
 export type QueryRaceArgs = {
@@ -70,7 +103,15 @@ export type QueryRaceArgs = {
 };
 
 export type QueryRacesByYearArgs = {
-  year: Scalars["Int"]["input"];
+  year: Scalars["String"]["input"];
+};
+
+export type QueryResultArgs = {
+  id: Scalars["Int"]["input"];
+};
+
+export type QueryResultByRaceIdArgs = {
+  id: Scalars["Int"]["input"];
 };
 
 export type Race = {
@@ -90,6 +131,17 @@ export type Result = {
   time: Scalars["Int"]["output"];
 };
 
+export type UpdateRaceInput = {
+  date?: InputMaybe<Scalars["String"]["input"]>;
+  location?: InputMaybe<Scalars["String"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+};
+
+export type UpdateResultInput = {
+  participant?: InputMaybe<Scalars["String"]["input"]>;
+  time?: InputMaybe<Scalars["Int"]["input"]>;
+};
+
 export type RaceFieldsFragment = {
   __typename?: "Race";
   id: number;
@@ -106,9 +158,7 @@ export type ResultFieldsFragment = {
 };
 
 export type CreateRaceMutationVariables = Exact<{
-  name: Scalars["String"]["input"];
-  date: Scalars["String"]["input"];
-  location: Scalars["String"]["input"];
+  input: CreateRaceInput;
 }>;
 
 export type CreateRaceMutation = {
@@ -122,15 +172,62 @@ export type CreateRaceMutation = {
   };
 };
 
-export type AddResultMutationVariables = Exact<{
-  raceId: Scalars["Int"]["input"];
-  participant: Scalars["String"]["input"];
-  time: Scalars["Int"]["input"];
+export type CreateResultMutationVariables = Exact<{
+  input: CreateResultInput;
 }>;
 
-export type AddResultMutation = {
+export type CreateResultMutation = {
   __typename?: "Mutation";
-  addResult: {
+  createResult: {
+    __typename?: "Result";
+    id: number;
+    participant: string;
+    time: number;
+  };
+};
+
+export type DeleteRaceMutationVariables = Exact<{
+  id: Scalars["Int"]["input"];
+}>;
+
+export type DeleteRaceMutation = {
+  __typename?: "Mutation";
+  deleteRace: boolean;
+};
+
+export type DeleteResultMutationVariables = Exact<{
+  id: Scalars["Int"]["input"];
+}>;
+
+export type DeleteResultMutation = {
+  __typename?: "Mutation";
+  deleteResult: boolean;
+};
+
+export type UpdateRaceMutationVariables = Exact<{
+  id: Scalars["Int"]["input"];
+  input: UpdateRaceInput;
+}>;
+
+export type UpdateRaceMutation = {
+  __typename?: "Mutation";
+  updateRace: {
+    __typename?: "Race";
+    id: number;
+    name: string;
+    date: string;
+    location: string;
+  };
+};
+
+export type UpdateResultMutationVariables = Exact<{
+  id: Scalars["Int"]["input"];
+  input: UpdateResultInput;
+}>;
+
+export type UpdateResultMutation = {
+  __typename?: "Mutation";
+  updateResult: {
     __typename?: "Result";
     id: number;
     participant: string;
@@ -172,11 +269,11 @@ export type GetRacesQuery = {
   }>;
 };
 
-export type GetRacesByYearQueryVariables = Exact<{
-  year: Scalars["Int"]["input"];
+export type GetByYearQueryVariables = Exact<{
+  year: Scalars["String"]["input"];
 }>;
 
-export type GetRacesByYearQuery = {
+export type GetByYearQuery = {
   __typename?: "Query";
   racesByYear: Array<{
     __typename?: "Race";
@@ -184,6 +281,32 @@ export type GetRacesByYearQuery = {
     name: string;
     date: string;
     location: string;
+  }>;
+};
+
+export type GetResultQueryVariables = Exact<{
+  resultId: Scalars["Int"]["input"];
+}>;
+
+export type GetResultQuery = {
+  __typename?: "Query";
+  result: {
+    __typename?: "Result";
+    id: number;
+    participant: string;
+    time: number;
+  };
+};
+
+export type GetResultsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetResultsQuery = {
+  __typename?: "Query";
+  results: Array<{
+    __typename?: "Result";
+    id: number;
+    participant: string;
+    time: number;
   }>;
 };
 
@@ -203,8 +326,8 @@ export const ResultFieldsFragmentDoc = gql`
   }
 `;
 export const CreateRaceDocument = gql`
-  mutation CreateRace($name: String!, $date: String!, $location: String!) {
-    createRace(name: $name, date: $date, location: $location) {
+  mutation CreateRace($input: CreateRaceInput!) {
+    createRace(input: $input) {
       ...raceFields
     }
   }
@@ -235,37 +358,164 @@ export type CreateRaceMutationOptions = Apollo.BaseMutationOptions<
   CreateRaceMutation,
   CreateRaceMutationVariables
 >;
-export const AddResultDocument = gql`
-  mutation AddResult($raceId: Int!, $participant: String!, $time: Int!) {
-    addResult(raceId: $raceId, participant: $participant, time: $time) {
+export const CreateResultDocument = gql`
+  mutation CreateResult($input: CreateResultInput!) {
+    createResult(input: $input) {
       ...resultFields
     }
   }
   ${ResultFieldsFragmentDoc}
 `;
-export type AddResultMutationFn = Apollo.MutationFunction<
-  AddResultMutation,
-  AddResultMutationVariables
+export type CreateResultMutationFn = Apollo.MutationFunction<
+  CreateResultMutation,
+  CreateResultMutationVariables
 >;
-export function useAddResultMutation(
+export function useCreateResultMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    AddResultMutation,
-    AddResultMutationVariables
+    CreateResultMutation,
+    CreateResultMutationVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useMutation<AddResultMutation, AddResultMutationVariables>(
-    AddResultDocument,
+  return Apollo.useMutation<
+    CreateResultMutation,
+    CreateResultMutationVariables
+  >(CreateResultDocument, options);
+}
+export type CreateResultMutationHookResult = ReturnType<
+  typeof useCreateResultMutation
+>;
+export type CreateResultMutationResult =
+  Apollo.MutationResult<CreateResultMutation>;
+export type CreateResultMutationOptions = Apollo.BaseMutationOptions<
+  CreateResultMutation,
+  CreateResultMutationVariables
+>;
+export const DeleteRaceDocument = gql`
+  mutation DeleteRace($id: Int!) {
+    deleteRace(id: $id)
+  }
+`;
+export type DeleteRaceMutationFn = Apollo.MutationFunction<
+  DeleteRaceMutation,
+  DeleteRaceMutationVariables
+>;
+export function useDeleteRaceMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteRaceMutation,
+    DeleteRaceMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<DeleteRaceMutation, DeleteRaceMutationVariables>(
+    DeleteRaceDocument,
     options,
   );
 }
-export type AddResultMutationHookResult = ReturnType<
-  typeof useAddResultMutation
+export type DeleteRaceMutationHookResult = ReturnType<
+  typeof useDeleteRaceMutation
 >;
-export type AddResultMutationResult = Apollo.MutationResult<AddResultMutation>;
-export type AddResultMutationOptions = Apollo.BaseMutationOptions<
-  AddResultMutation,
-  AddResultMutationVariables
+export type DeleteRaceMutationResult =
+  Apollo.MutationResult<DeleteRaceMutation>;
+export type DeleteRaceMutationOptions = Apollo.BaseMutationOptions<
+  DeleteRaceMutation,
+  DeleteRaceMutationVariables
+>;
+export const DeleteResultDocument = gql`
+  mutation DeleteResult($id: Int!) {
+    deleteResult(id: $id)
+  }
+`;
+export type DeleteResultMutationFn = Apollo.MutationFunction<
+  DeleteResultMutation,
+  DeleteResultMutationVariables
+>;
+export function useDeleteResultMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    DeleteResultMutation,
+    DeleteResultMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    DeleteResultMutation,
+    DeleteResultMutationVariables
+  >(DeleteResultDocument, options);
+}
+export type DeleteResultMutationHookResult = ReturnType<
+  typeof useDeleteResultMutation
+>;
+export type DeleteResultMutationResult =
+  Apollo.MutationResult<DeleteResultMutation>;
+export type DeleteResultMutationOptions = Apollo.BaseMutationOptions<
+  DeleteResultMutation,
+  DeleteResultMutationVariables
+>;
+export const UpdateRaceDocument = gql`
+  mutation UpdateRace($id: Int!, $input: UpdateRaceInput!) {
+    updateRace(id: $id, input: $input) {
+      ...raceFields
+    }
+  }
+  ${RaceFieldsFragmentDoc}
+`;
+export type UpdateRaceMutationFn = Apollo.MutationFunction<
+  UpdateRaceMutation,
+  UpdateRaceMutationVariables
+>;
+export function useUpdateRaceMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateRaceMutation,
+    UpdateRaceMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateRaceMutation, UpdateRaceMutationVariables>(
+    UpdateRaceDocument,
+    options,
+  );
+}
+export type UpdateRaceMutationHookResult = ReturnType<
+  typeof useUpdateRaceMutation
+>;
+export type UpdateRaceMutationResult =
+  Apollo.MutationResult<UpdateRaceMutation>;
+export type UpdateRaceMutationOptions = Apollo.BaseMutationOptions<
+  UpdateRaceMutation,
+  UpdateRaceMutationVariables
+>;
+export const UpdateResultDocument = gql`
+  mutation UpdateResult($id: Int!, $input: UpdateResultInput!) {
+    updateResult(id: $id, input: $input) {
+      ...resultFields
+    }
+  }
+  ${ResultFieldsFragmentDoc}
+`;
+export type UpdateResultMutationFn = Apollo.MutationFunction<
+  UpdateResultMutation,
+  UpdateResultMutationVariables
+>;
+export function useUpdateResultMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    UpdateResultMutation,
+    UpdateResultMutationVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    UpdateResultMutation,
+    UpdateResultMutationVariables
+  >(UpdateResultDocument, options);
+}
+export type UpdateResultMutationHookResult = ReturnType<
+  typeof useUpdateResultMutation
+>;
+export type UpdateResultMutationResult =
+  Apollo.MutationResult<UpdateResultMutation>;
+export type UpdateResultMutationOptions = Apollo.BaseMutationOptions<
+  UpdateResultMutation,
+  UpdateResultMutationVariables
 >;
 export const GetRaceWithResultsDocument = gql`
   query GetRaceWithResults($raceId: Int!) {
@@ -350,45 +600,117 @@ export type GetRacesQueryResult = Apollo.QueryResult<
   GetRacesQuery,
   GetRacesQueryVariables
 >;
-export const GetRacesByYearDocument = gql`
-  query GetRacesByYear($year: Int!) {
+export const GetByYearDocument = gql`
+  query GetByYear($year: String!) {
     racesByYear(year: $year) {
       ...raceFields
     }
   }
   ${RaceFieldsFragmentDoc}
 `;
-export function useGetRacesByYearQuery(
-  baseOptions: Apollo.QueryHookOptions<
-    GetRacesByYearQuery,
-    GetRacesByYearQueryVariables
-  >,
+export function useGetByYearQuery(
+  baseOptions: Apollo.QueryHookOptions<GetByYearQuery, GetByYearQueryVariables>,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useQuery<GetRacesByYearQuery, GetRacesByYearQueryVariables>(
-    GetRacesByYearDocument,
+  return Apollo.useQuery<GetByYearQuery, GetByYearQueryVariables>(
+    GetByYearDocument,
     options,
   );
 }
-export function useGetRacesByYearLazyQuery(
+export function useGetByYearLazyQuery(
   baseOptions?: Apollo.LazyQueryHookOptions<
-    GetRacesByYearQuery,
-    GetRacesByYearQueryVariables
+    GetByYearQuery,
+    GetByYearQueryVariables
   >,
 ) {
   const options = { ...defaultOptions, ...baseOptions };
-  return Apollo.useLazyQuery<GetRacesByYearQuery, GetRacesByYearQueryVariables>(
-    GetRacesByYearDocument,
+  return Apollo.useLazyQuery<GetByYearQuery, GetByYearQueryVariables>(
+    GetByYearDocument,
     options,
   );
 }
-export type GetRacesByYearQueryHookResult = ReturnType<
-  typeof useGetRacesByYearQuery
+export type GetByYearQueryHookResult = ReturnType<typeof useGetByYearQuery>;
+export type GetByYearLazyQueryHookResult = ReturnType<
+  typeof useGetByYearLazyQuery
 >;
-export type GetRacesByYearLazyQueryHookResult = ReturnType<
-  typeof useGetRacesByYearLazyQuery
+export type GetByYearQueryResult = Apollo.QueryResult<
+  GetByYearQuery,
+  GetByYearQueryVariables
 >;
-export type GetRacesByYearQueryResult = Apollo.QueryResult<
-  GetRacesByYearQuery,
-  GetRacesByYearQueryVariables
+export const GetResultDocument = gql`
+  query GetResult($resultId: Int!) {
+    result(id: $resultId) {
+      ...resultFields
+    }
+  }
+  ${ResultFieldsFragmentDoc}
+`;
+export function useGetResultQuery(
+  baseOptions: Apollo.QueryHookOptions<GetResultQuery, GetResultQueryVariables>,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetResultQuery, GetResultQueryVariables>(
+    GetResultDocument,
+    options,
+  );
+}
+export function useGetResultLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetResultQuery,
+    GetResultQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetResultQuery, GetResultQueryVariables>(
+    GetResultDocument,
+    options,
+  );
+}
+export type GetResultQueryHookResult = ReturnType<typeof useGetResultQuery>;
+export type GetResultLazyQueryHookResult = ReturnType<
+  typeof useGetResultLazyQuery
+>;
+export type GetResultQueryResult = Apollo.QueryResult<
+  GetResultQuery,
+  GetResultQueryVariables
+>;
+export const GetResultsDocument = gql`
+  query GetResults {
+    results {
+      ...resultFields
+    }
+  }
+  ${ResultFieldsFragmentDoc}
+`;
+export function useGetResultsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetResultsQuery,
+    GetResultsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetResultsQuery, GetResultsQueryVariables>(
+    GetResultsDocument,
+    options,
+  );
+}
+export function useGetResultsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetResultsQuery,
+    GetResultsQueryVariables
+  >,
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetResultsQuery, GetResultsQueryVariables>(
+    GetResultsDocument,
+    options,
+  );
+}
+export type GetResultsQueryHookResult = ReturnType<typeof useGetResultsQuery>;
+export type GetResultsLazyQueryHookResult = ReturnType<
+  typeof useGetResultsLazyQuery
+>;
+export type GetResultsQueryResult = Apollo.QueryResult<
+  GetResultsQuery,
+  GetResultsQueryVariables
 >;

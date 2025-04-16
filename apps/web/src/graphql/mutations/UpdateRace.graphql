@@ -1,0 +1,5 @@
+mutation UpdateRace($id: Int!, $input: UpdateRaceInput!) {
+  updateRace(id: $id, input: $input) {
+    ...raceFields
+  }
+}

@@ -1,0 +1,3 @@
+mutation DeleteRace($id: Int!) {
+  deleteRace(id: $id)
+}

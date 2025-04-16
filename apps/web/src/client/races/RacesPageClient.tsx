@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRaces } from "@/graphql/hooks/GetRaces";
+import { useRaces } from "@/graphql/hooks/useGetRaces";
 import RacesTable from "./RacesTable";
 import LoadingSpinner from "@/components/loading/LoadingSpinner";
 import ErrorState from "@/components/error/ErrorState";
@@ -15,7 +15,7 @@ import {
   Alert,
 } from "@mui/material";
 import { useFirebaseAuth } from "@/providers/auth/AuthContext";
-import { useCreateRace } from "@/graphql/hooks/CreateRace";
+import { useCreateRace } from "@/graphql/hooks/useCreateRace";
 import AddIcon from "@mui/icons-material/Add";
 import AddRaceDialog, {
   NewRaceData,

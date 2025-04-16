@@ -5,8 +5,8 @@ export const resolvers = {
     races: async (_parent: any, _args: any, context: Context) => {
       return context.raceService.getAll();
     },
-    race: async (_parent: any, args: { id: string }, context: Context) => {
-      return context.raceService.getById(Number(args.id));
+    race: async (_parent: any, args: { id: number }, context: Context) => {
+      return context.raceService.getById(args.id);
     },
     racesByYear: async (
       _parent: any,
@@ -18,82 +18,80 @@ export const resolvers = {
     results: async (_parent: any, _args: any, context: Context) => {
       return context.resultService.getAll();
     },
-    result: async (_parent: any, args: { id: string }, context: Context) => {
-      return context.resultService.getById(Number(args.id));
+    result: async (_parent: any, args: { id: number }, context: Context) => {
+      return context.resultService.getById(args.id);
     },
     resultByRaceId: async (
       _parent: any,
-      args: { id: string },
+      args: { id: number },
       context: Context
     ) => {
-      return context.resultService.getByRaceId(Number(args.id));
+      return context.resultService.getByRaceId(args.id);
     },
   },
   Mutation: {
     createRace: async (
       _parent: any,
-      args: { name: string; date: string; location: string },
+      args: { input: { name: string; date: string; location: string } },
       context: Context
     ) => {
+      const { input } = args;
       return context.raceService.create({
-        ...args,
-        date: new Date(args.date),
+        ...input,
+        date: new Date(input.date),
       });
     },
     updateRace: async (
       _parent: any,
-      args: { id: string; name?: string; date?: string; location?: string },
+      args: {
+        id: number;
+        input: { name?: string; date?: string; location?: string };
+      },
       context: Context
     ) => {
-      const { id, ...rest } = args;
-
-      return context.raceService.update(Number(id), {
-        ...rest,
-        date: rest.date ? new Date(rest.date) : undefined, // convert date string to Date
+      const { id, input } = args;
+      return context.raceService.update(id, {
+        ...input,
+        date: input.date ? new Date(input.date) : undefined,
       });
     },
     deleteRace: async (
       _parent: any,
-      args: { id: string },
+      args: { id: number },
       context: Context
     ) => {
-      return context.raceService.delete(Number(args.id));
+      return context.raceService.delete(args.id);
     },
     createResult: async (
       _parent: any,
-      args: { raceId: string; participant: string; time: number },
+      args: { input: { raceId: number; participant: string; time: number } },
       context: Context
     ) => {
-      return context.resultService.create({
-        ...args,
-        raceId: Number(args.raceId),
-      });
+      return context.resultService.create(args.input);
     },
     updateResult: async (
       _parent: any,
-      args: { id: string; participant?: string; time?: number },
+      args: { id: number; input: { participant?: string; time?: number } },
       context: Context
     ) => {
-      const { id, ...rest } = args;
-
-      return context.resultService.update(Number(id), rest);
+      return context.resultService.update(args.id, args.input);
     },
     deleteResult: async (
       _parent: any,
-      args: { id: string },
+      args: { id: number },
       context: Context
     ) => {
-      return context.resultService.delete(Number(args.id));
+      return context.resultService.delete(args.id);
     },
   },
   Race: {
-    results: async (parent: { id: string }, _args: any, context: Context) => {
-      return context.resultService.getByRaceId(Number(parent.id));
+    results: async (parent: { id: number }, _args: any, context: Context) => {
+      return context.resultService.getByRaceId(parent.id);
     },
   },
   Result: {
-    race: async (parent: { raceId: string }, _args: any, context: Context) => {
-      return context.raceService.getById(Number(parent.raceId));
+    race: async (parent: { raceId: number }, _args: any, context: Context) => {
+      return context.raceService.getById(parent.raceId);
     },
   },
 };

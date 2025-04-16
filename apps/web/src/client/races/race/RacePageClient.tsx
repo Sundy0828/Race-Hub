@@ -1,6 +1,6 @@
 "use client";
 
-import { useRaceWithResults } from "@/graphql/hooks/GetRaceWithResults";
+import { useRaceWithResults } from "@/graphql/hooks/useGetRaceWithResults";
 
 type Props = {
   raceid: string;

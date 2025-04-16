@@ -16,6 +16,29 @@ export const typeDefs = gql`
     race: Race!
   }
 
+  input CreateRaceInput {
+    name: String!
+    date: String!
+    location: String!
+  }
+
+  input UpdateRaceInput {
+    name: String
+    date: String
+    location: String
+  }
+
+  input CreateResultInput {
+    raceId: Int!
+    participant: String!
+    time: Int!
+  }
+
+  input UpdateResultInput {
+    participant: String
+    time: Int
+  }
+
   type Query {
     races: [Race!]!
     race(id: Int!): Race
@@ -26,11 +49,11 @@ export const typeDefs = gql`
   }
 
   type Mutation {
-    createRace(name: String!, date: String!, location: String!): Race!
-    updateRace(id: Int!, name: String, date: String, location: String): Race!
+    createRace(input: CreateRaceInput!): Race!
+    updateRace(id: Int!, input: UpdateRaceInput!): Race!
     deleteRace(id: Int!): Boolean!
-    createResult(raceId: Int!, participant: String!, time: Int!): Result!
-    updateResult(id: Int!, participant: String, time: Int): Result!
+    createResult(input: CreateResultInput!): Result!
+    updateResult(id: Int!, input: UpdateResultInput!): Result!
     deleteResult(id: Int!): Boolean!
   }
 `;

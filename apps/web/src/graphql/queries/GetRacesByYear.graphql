@@ -1,4 +1,4 @@
-query GetRacesByYear($year: Int!) {
+query GetByYear($year: String!) {
   racesByYear(year: $year) {
     ...raceFields
   }

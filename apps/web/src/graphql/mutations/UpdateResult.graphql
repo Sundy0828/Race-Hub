@@ -1,0 +1,5 @@
+mutation UpdateResult($id: Int!, $input: UpdateResultInput!) {
+  updateResult(id: $id, input: $input) {
+    ...resultFields
+  }
+}

@@ -1,0 +1,5 @@
+query GetResult($resultId: Int!) {
+  result(id: $resultId) {
+    ...resultFields
+  }
+}

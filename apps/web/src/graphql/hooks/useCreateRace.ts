@@ -36,7 +36,7 @@ export const useCreateRace = (): CreateRaceResponse => {
     onError?: (error: Error) => void
   ): void => {
     createRaceMutation({
-      variables: { name, date, location },
+      variables: { input: { name, date, location } },
       onCompleted,
       onError,
     });
