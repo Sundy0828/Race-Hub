@@ -10,10 +10,18 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
-import { Race } from "@/types/generated"; // adjust if needed
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Race } from "@/types/generated";
 
 type Props = {
   races: Race[];
+  onEdit?: (race: Race) => void;
+  onDelete?: (race: Race) => void;
 };
 
 const columns = [
@@ -22,9 +30,12 @@ const columns = [
   { id: "date", label: "Date", minWidth: 120 },
 ];
 
-export default function RacesTable({ races }: Props) {
+export default function RacesTable({ races, onEdit, onDelete }: Props) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [menuRace, setMenuRace] = React.useState<Race | null>(null);
+
   const router = useRouter();
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -38,8 +49,24 @@ export default function RacesTable({ races }: Props) {
     setPage(0);
   };
 
-  const handleRowClick = (id: number) => {
-    router.push(`/races/${id}`);
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, race: Race) => {
+    setAnchorEl(event.currentTarget);
+    setMenuRace(race);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setMenuRace(null);
+  };
+
+  const handleEdit = () => {
+    if (menuRace && onEdit) onEdit(menuRace);
+    handleMenuClose();
+  };
+
+  const handleDelete = () => {
+    if (menuRace && onDelete) onDelete(menuRace);
+    handleMenuClose();
   };
 
   return (
@@ -56,6 +83,7 @@ export default function RacesTable({ races }: Props) {
                   {column.label}
                 </TableCell>
               ))}
+              <TableCell align="right">Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -64,10 +92,13 @@ export default function RacesTable({ races }: Props) {
               .map((race) => (
                 <TableRow
                   hover
-                  role="button"
                   key={race.id}
-                  onClick={() => handleRowClick(race.id)}
                   sx={{ cursor: "pointer" }}
+                  onClick={() =>
+                    router.push(
+                      `/races/${new Date(Number(race.date)).getFullYear()}/${race.id}`
+                    )
+                  }
                 >
                   <TableCell>{race.name}</TableCell>
                   <TableCell>{race.location}</TableCell>
@@ -83,11 +114,17 @@ export default function RacesTable({ races }: Props) {
                         )
                       : "Unknown"}
                   </TableCell>
+                  <TableCell align="right" onClick={(e) => e.stopPropagation()}>
+                    <IconButton onClick={(e) => handleMenuOpen(e, race)}>
+                      <MoreVertIcon />
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
               ))}
           </TableBody>
         </Table>
       </TableContainer>
+
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
@@ -97,6 +134,21 @@ export default function RacesTable({ races }: Props) {
         onPageChange={handleChangePage}
         onRowsPerPageChange={handleChangeRowsPerPage}
       />
+
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+      >
+        <MenuItem onClick={handleEdit}>
+          <EditIcon fontSize="small" sx={{ mr: 1 }} />
+          Edit
+        </MenuItem>
+        <MenuItem onClick={handleDelete}>
+          <DeleteIcon fontSize="small" sx={{ mr: 1 }} />
+          Delete
+        </MenuItem>
+      </Menu>
     </Paper>
   );
 }
