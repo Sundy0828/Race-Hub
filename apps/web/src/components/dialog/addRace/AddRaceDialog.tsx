@@ -10,22 +10,39 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import LocationAutocomplete from "@/components/input/location/LocationAutoComplete";
+import { MutationStatus } from "@/hooks/useStatusFromMutation";
+import StatusButton from "@/components/button/statusButton/StatusButton";
+
+export type NewRaceData = {
+  name: string;
+  date: string;
+  location: string;
+};
 
 type Props = {
   open: boolean;
   onClose: () => void;
-  onSave: (name: string, date: string, location: string) => void;
+  onSave: (race: NewRaceData) => void;
+  status?: MutationStatus;
 };
 
-export default function AddRaceDialog({ open, onClose, onSave }: Props) {
-  const [name, setName] = useState("Spring Classic");
-  const [date, setDate] = useState("2025-04-27");
+export default function AddRaceDialog({
+  open,
+  onClose,
+  onSave,
+  status,
+}: Props) {
+  const now = new Date();
+  const localDateStr = now.toLocaleDateString("sv-SE");
+
+  const [name, setName] = useState("");
+  const [date, setDate] = useState(localDateStr);
   const [location, setLocation] = useState("");
   const [isLocationValid, setIsLocationValid] = useState(false);
 
   const handleSave = () => {
     if (name && date && isLocationValid) {
-      onSave(name, date, location);
+      onSave({ name, date, location });
     }
   };
 
@@ -58,13 +75,13 @@ export default function AddRaceDialog({ open, onClose, onSave }: Props) {
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
-        <Button
+        <StatusButton
           onClick={handleSave}
-          variant="contained"
-          disabled={!name || !date || !isLocationValid}
+          disabled={!name || !date || !location || !isLocationValid}
+          status={status}
         >
           Save
-        </Button>
+        </StatusButton>
       </DialogActions>
     </Dialog>
   );

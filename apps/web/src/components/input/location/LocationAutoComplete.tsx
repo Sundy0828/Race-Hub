@@ -1,21 +1,11 @@
-"use client";
-
-import {
-  Autocomplete,
-  CircularProgress,
-  debounce,
-  TextField,
-} from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import { Autocomplete, TextField, CircularProgress } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
+import debounce from "lodash.debounce";
 
 type Props = {
   value: string;
-  onChange: (value: string) => void;
-  onValidate?: (valid: boolean) => void;
-};
-
-type LocationOption = {
-  label: string;
+  onChange: (val: string) => void;
+  onValidate?: (isValid: boolean) => void;
 };
 
 export default function LocationAutocomplete({
@@ -23,96 +13,130 @@ export default function LocationAutocomplete({
   onChange,
   onValidate,
 }: Props) {
-  const [options, setOptions] = useState<LocationOption[]>([]);
+  const [options, setOptions] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
-  // Inside component state
-  const [isValid, setIsValid] = useState(true);
+  const didFetchLocation = useRef(false); // 🆕 Tracks whether we already fetched
 
-  // Fetch suggestions from OpenCage
-  const fetchSuggestions = useMemo(
-    () =>
-      debounce(async (input: string) => {
-        if (!input) return;
+  const fetchSuggestions = debounce(async (input: string) => {
+    if (!input) return;
 
-        setLoading(true);
-        try {
-          const res = await fetch(
-            `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(
-              input
-            )}&key=${process.env.NEXT_PUBLIC_OPENCAGE_KEY}&limit=5`
-          );
-          const data = await res.json();
-
-          const suggestions = data.results.map((result: any) => ({
-            label: result.formatted,
-          }));
-          setOptions(suggestions);
-        } catch (err) {
-          console.error("Failed to fetch location suggestions:", err);
-        } finally {
-          setLoading(false);
-        }
-      }, 400),
-    []
-  );
-
-  // Validate full location
-  const validateLocation = async (input: string) => {
-    if (!onValidate) return;
-    if (!input) {
-      setIsValid(false);
-      onValidate(false);
-      return;
-    }
-
+    setLoading(true);
     try {
-      const res = await fetch(
-        `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(
-          input
-        )}&key=${process.env.NEXT_PUBLIC_OPENCAGE_KEY}&limit=1`
-      );
+      const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(
+        input
+      )}&key=${process.env.NEXT_PUBLIC_OPENCAGE_API_KEY}&limit=5&countrycode=us`;
+
+      const res = await fetch(url);
       const data = await res.json();
-      const valid = data.results && data.results.length > 0;
-      setIsValid(valid);
-      onValidate(valid);
-    } catch (err) {
-      console.error("Location validation failed:", err);
-      setIsValid(false);
-      onValidate(false);
+
+      const places = data.results
+        .map((r: any) => {
+          const city =
+            r.components.city || r.components.town || r.components.village;
+          const state = r.components.state_code || r.components.state;
+          return city && state ? `${city}, ${state}` : null;
+        })
+        .filter(Boolean);
+
+      setOptions(Array.from(new Set(places)));
+    } finally {
+      setLoading(false);
+    }
+  }, 300);
+
+  const validateLocation = async (location: string) => {
+    const url = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(
+      location
+    )}&key=${process.env.NEXT_PUBLIC_OPENCAGE_API_KEY}&limit=1&countrycode=us`;
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    const result = data?.results?.[0];
+    const isValid = !!(
+      result &&
+      (result.components.city ||
+        result.components.town ||
+        result.components.village) &&
+      (result.components.state_code || result.components.state)
+    );
+
+    onValidate?.(isValid);
+  };
+
+  const fetchInitialLocation = async () => {
+    if (didFetchLocation.current) return; // 🛑 Already fetched
+    didFetchLocation.current = true; // ✅ Prevent re-fetching
+
+    setLoading(true);
+    try {
+      const coords = await new Promise<GeolocationPosition["coords"]>(
+        (resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(
+            (pos) => resolve(pos.coords),
+            () => reject("Geolocation failed"),
+            { timeout: 5000 }
+          );
+        }
+      );
+
+      const url = `https://api.opencagedata.com/geocode/v1/json?q=${coords.latitude},${coords.longitude}&key=${process.env.NEXT_PUBLIC_OPENCAGE_API_KEY}&limit=1&countrycode=us`;
+      const res = await fetch(url);
+      const data = await res.json();
+
+      const result = data.results?.[0]?.components;
+      const city = result?.city || result?.town || result?.village;
+      const state = result?.state_code || result?.state;
+
+      if (city && state) {
+        const locationStr = `${city}, ${state}`;
+        onChange(locationStr);
+      }
+    } catch {
+      const url = `https://api.opencagedata.com/geocode/v1/json?q=me&key=${process.env.NEXT_PUBLIC_OPENCAGE_API_KEY}&limit=1&countrycode=us`;
+      const res = await fetch(url);
+      const data = await res.json();
+
+      const result = data.results?.[0]?.components;
+      const city = result?.city || result?.town || result?.village;
+      const state = result?.state_code || result?.state;
+
+      if (city && state) {
+        const locationStr = `${city}, ${state}`;
+        onChange(locationStr);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchSuggestions(value);
-    validateLocation(value);
+    if (!value && !didFetchLocation.current) {
+      fetchInitialLocation();
+    } else if (value) {
+      validateLocation(value);
+    }
   }, [value]);
 
   return (
     <Autocomplete
-      fullWidth
       freeSolo
       options={options}
-      inputValue={value}
-      onInputChange={(event, newValue) => {
-        onChange(newValue);
+      loading={loading}
+      value={value}
+      onInputChange={(_, newInputValue) => {
+        onChange(newInputValue);
+        fetchSuggestions(newInputValue);
       }}
-      getOptionLabel={(option) =>
-        typeof option === "string" ? option : option.label
-      }
       renderInput={(params) => (
         <TextField
           {...params}
           label="Location"
-          error={!isValid}
-          helperText={
-            !isValid ? "Invalid location. Please select a valid place." : ""
-          }
-          margin="dense"
           InputProps={{
             ...params.InputProps,
             endAdornment: (
               <>
-                {loading ? <CircularProgress size={18} /> : null}
+                {loading && <CircularProgress color="inherit" size={20} />}
                 {params.InputProps.endAdornment}
               </>
             ),
