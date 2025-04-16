@@ -1,38 +1,47 @@
-import { Context } from "../context";
+import { IRaceDao } from "./interfaces/IRaceDao";
+import { PrismaClient, race as Race } from "@prisma/client";
+import { Logger } from "../utils/Logger";
 
-// Get all races
-export const getAllRaces = async (context: Context) => {
-  return context.prisma.race.findMany();
-};
+export class RaceDao implements IRaceDao {
+  private context: PrismaClient;
+  private logger: Logger;
 
-export const getAllRacesByYear = async (year: string, context: Context) => {
-  return context.prisma.race.findMany({
-    where: {
-      date: {
-        gte: new Date(`${year}-01-01T00:00:00.000Z`),
-        lt: new Date(`${year + 1}-01-01T00:00:00.000Z`),
+  constructor(context: PrismaClient, logger: Logger) {
+    this.context = context;
+    this.logger = logger;
+  }
+
+  async getAll(): Promise<Race[]> {
+    return this.context.race.findMany();
+  }
+
+  async getAllByYear(year: string): Promise<Race[]> {
+    return this.context.race.findMany({
+      where: {
+        date: {
+          gte: new Date(`${year}-01-01`),
+          lte: new Date(`${year}-12-31`),
+        },
       },
-    },
-  });
-};
+    });
+  }
 
-// Get a race by ID
-export const getRaceById = async (id: number, context: Context) => {
-  return context.prisma.race.findUnique({
-    where: { id },
-  });
-};
+  async getById(id: number): Promise<Race | null> {
+    return this.context.race.findUnique({ where: { id } });
+  }
 
-// Create a new race
-export const createRace = async (
-  args: { name: string; date: string; location: string },
-  context: Context
-) => {
-  return context.prisma.race.create({
-    data: {
-      name: args.name,
-      date: new Date(args.date),
-      location: args.location,
-    },
-  });
-};
+  create(data: Omit<Race, "id">): Promise<Race> {
+    return this.context.race.create({ data });
+  }
+
+  update(id: number, data: Partial<Race>): Promise<Race> {
+    return this.context.race.update({
+      where: { id },
+      data,
+    });
+  }
+
+  async delete(id: number): Promise<void> {
+    await this.context.race.delete({ where: { id } });
+  }
+}
