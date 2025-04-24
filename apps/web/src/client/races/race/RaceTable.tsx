@@ -32,7 +32,7 @@ const columns = [
   { id: "race", label: "Race", minWidth: 150 },
 ];
 
-export default function ResultsTable({ results, onEdit, onDelete }: Props) {
+export default function RaceTable({ results, onEdit, onDelete }: Props) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);

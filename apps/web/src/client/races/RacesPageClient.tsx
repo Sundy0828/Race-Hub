@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { useRaces } from "@/graphql/hooks/useGetRaces";
 import RacesTable from "./RacesTable";
-import LoadingSpinner from "@/components/loading/LoadingSpinner";
-import ErrorState from "@/components/error/ErrorState";
-import { Box, Card, CardContent, Typography, Button } from "@mui/material";
+import LoadingSpinner from "@/components/state/loading/LoadingSpinner";
+import ErrorCard from "@/components/state/error/ErrorCard";
+import { Box, Typography, Button } from "@mui/material";
 import { useFirebaseAuth } from "@/providers/auth/AuthContext";
 import { useCreateRace } from "@/graphql/hooks/useCreateRace";
 import AddIcon from "@mui/icons-material/Add";
@@ -16,7 +16,7 @@ import { useDeleteRace } from "@/graphql/hooks/useDeleteRace";
 import { useUpdateRace } from "@/graphql/hooks/useUpdateRace";
 import { Race } from "@/graphql/generated/graphqlTypes";
 import ConfirmDialog from "@/components/dialog/confirm/ConfirmDialog";
-import EmptyCard from "@/components/emptyCard/EmptyCard";
+import EmptyCard from "@/components/state/empty/EmptyCard";
 import sharedStyles from "@/styles/shared.module.scss";
 
 export default function RacesPageClient({ yearId }: { yearId: number }) {
@@ -90,7 +90,7 @@ export default function RacesPageClient({ yearId }: { yearId: number }) {
   };
 
   if (racesLoading) return <LoadingSpinner />;
-  if (racesError) return <ErrorState onRetry={() => racesRefetch()} />;
+  if (racesError) return <ErrorCard onRetry={() => racesRefetch()} />;
 
   return (
     <div className={sharedStyles.maxSize}>
@@ -130,7 +130,7 @@ export default function RacesPageClient({ yearId }: { yearId: number }) {
         title="Delete Race?"
         message="Are you sure you want to delete this race? This action cannot be undone."
         confirmText="Delete"
-        status={deleteRaceLoading}
+        status={deleteStatus}
       />
 
       {races && races.length > 0 ? (

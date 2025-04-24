@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import { useFirebaseAuth } from "@/providers/auth/AuthContext";
 import { updateProfile, updatePassword, updateEmail } from "firebase/auth";
 import { isStrongPassword } from "@/utility/authUtility";
-import LoadingSpinner from "@/components/loading/LoadingSpinner";
+import LoadingSpinner from "@/components/state/loading/LoadingSpinner";
 import UserAvatar from "@/components/avatar/UserAvatar";
 import styles from "./UserData.module.scss";
 

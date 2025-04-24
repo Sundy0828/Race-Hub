@@ -7,7 +7,7 @@ type Props = {
   onRetry?: () => void;
 };
 
-export default function ErrorState({
+export default function ErrorCard({
   message = "Something went wrong.",
   onRetry,
 }: Props) {

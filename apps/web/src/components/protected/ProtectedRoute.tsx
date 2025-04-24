@@ -3,7 +3,7 @@
 import { useFirebaseAuth } from "@/providers/auth/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import LoadingSpinner from "@/components/loading/LoadingSpinner";
+import LoadingSpinner from "@/components/state/loading/LoadingSpinner";
 
 export default function ProtectedRoute({
   children,
