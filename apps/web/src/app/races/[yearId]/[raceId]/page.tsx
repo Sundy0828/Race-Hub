@@ -6,19 +6,19 @@ import type { Metadata } from "next";
 
 type Props = {
   params: {
-    raceid: string;
-    yearid: string;
-    resultid: string;
+    raceId: string;
+    yearId: string;
+    resultId: string;
   };
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { raceid, yearid, resultid } = params;
+  const { raceId, yearId, resultId } = params;
 
   const client = getClient();
   const { data } = await client.query({
     query: GetRaceWithResultsDocument,
-    variables: { raceId: Number(raceid) },
+    variables: { raceId: Number(raceId) },
   });
 
   const title = data?.race?.name ?? "Race Results";
@@ -28,12 +28,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default function SpecificResultPage({ params }: Props) {
   return (
-    <div>
-      <RacePageClient
-        raceid={params.raceid}
-        yearid={params.yearid}
-        resultid={params.resultid}
-      />
-    </div>
+    <RacePageClient
+      raceId={params.raceId}
+      yearId={params.yearId}
+      resultId={params.resultId}
+    />
   );
 }

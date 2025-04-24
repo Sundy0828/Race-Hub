@@ -25,11 +25,29 @@ const commonThemeOptions: ThemeOptions = {
   spacing: 8,
 };
 
-export const getTheme = (mode: "light" | "dark") =>
-  createTheme({
-    ...commonThemeOptions,
-    palette: {
-      ...commonThemeOptions.palette,
-      mode,
+const darkThemeOptions: ThemeOptions = {
+  ...commonThemeOptions,
+  palette: {
+    ...commonThemeOptions.palette,
+    background: {
+      paper: "#232a31",
+      default: "#101417",
     },
-  });
+    mode: "dark",
+  },
+};
+
+const lightThemeOptions: ThemeOptions = {
+  ...commonThemeOptions,
+  palette: {
+    ...commonThemeOptions.palette,
+    background: {
+      paper: "#edf0f2",
+      default: "#ffffff",
+    },
+    mode: "light",
+  },
+};
+
+export const getTheme = (mode: "light" | "dark") =>
+  createTheme(mode === "light" ? lightThemeOptions : darkThemeOptions);

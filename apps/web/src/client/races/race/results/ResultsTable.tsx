@@ -1,40 +1,42 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TablePagination from "@mui/material/TablePagination";
-import TableRow from "@mui/material/TableRow";
-import IconButton from "@mui/material/IconButton";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  IconButton,
+  Menu,
+  MenuItem,
+} from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Race } from "@/types/generated";
+import { useRouter } from "next/navigation";
+import { Result } from "@/types/generated"; // adjust import path as needed
 
 type Props = {
-  races: Race[];
-  onEdit?: (race: Race) => void;
-  onDelete?: (race: Race) => void;
+  results: Result[];
+  onEdit?: (result: Result) => void;
+  onDelete?: (result: Result) => void;
 };
 
 const columns = [
-  { id: "name", label: "Name", minWidth: 150 },
-  { id: "location", label: "Location", minWidth: 150 },
-  { id: "date", label: "Date", minWidth: 120 },
+  { id: "participant", label: "Participant", minWidth: 150 },
+  { id: "time", label: "Time", minWidth: 100 },
+  { id: "race", label: "Race", minWidth: 150 },
 ];
 
-export default function RacesTable({ races, onEdit, onDelete }: Props) {
+export default function ResultsTable({ results, onEdit, onDelete }: Props) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [menuRace, setMenuRace] = React.useState<Race | null>(null);
+  const [menuResult, setMenuResult] = React.useState<Result | null>(null);
 
   const router = useRouter();
 
@@ -49,37 +51,41 @@ export default function RacesTable({ races, onEdit, onDelete }: Props) {
     setPage(0);
   };
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, race: Race) => {
+  const handleMenuOpen = (
+    event: React.MouseEvent<HTMLElement>,
+    result: Result
+  ) => {
     setAnchorEl(event.currentTarget);
-    setMenuRace(race);
+    setMenuResult(result);
   };
 
   const handleMenuClose = () => {
     setAnchorEl(null);
-    setMenuRace(null);
+    setMenuResult(null);
   };
 
   const handleEdit = () => {
-    console.log(menuRace);
-    if (menuRace && onEdit) onEdit(menuRace);
+    if (menuResult && onEdit) onEdit(menuResult);
     handleMenuClose();
   };
 
   const handleDelete = () => {
-    if (menuRace && onDelete) onDelete(menuRace);
+    if (menuResult && onDelete) onDelete(menuResult);
     handleMenuClose();
+  };
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
       <TableContainer sx={{ maxHeight: 500 }}>
-        <Table stickyHeader aria-label="races table">
+        <Table stickyHeader aria-label="results table">
           <TableHead>
-            <TableRow
-              sx={{
-                backgroundColor: (theme) => theme.palette.background.paper,
-              }}
-            >
+            <TableRow>
               {columns.map((column) => (
                 <TableCell
                   key={column.id}
@@ -102,35 +108,24 @@ export default function RacesTable({ races, onEdit, onDelete }: Props) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {races
+            {results
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((race) => (
+              .map((result) => (
                 <TableRow
                   hover
-                  key={race.id}
+                  key={result.id}
                   sx={{ cursor: "pointer" }}
                   onClick={() =>
                     router.push(
-                      `/races/${new Date(Number(race.date)).getFullYear()}/${race.id}`
+                      `/races/${new Date(Number(result.race.date)).getFullYear()}/${result.race.id}`
                     )
                   }
                 >
-                  <TableCell>{race.name}</TableCell>
-                  <TableCell>{race.location}</TableCell>
-                  <TableCell>
-                    {race.date
-                      ? new Date(Number(race.date)).toLocaleDateString(
-                          "en-US",
-                          {
-                            year: "numeric",
-                            month: "short",
-                            day: "numeric",
-                          }
-                        )
-                      : "Unknown"}
-                  </TableCell>
+                  <TableCell>{result.participant}</TableCell>
+                  <TableCell>{formatTime(result.time)}</TableCell>
+                  <TableCell>{result.race.name}</TableCell>
                   <TableCell align="right" onClick={(e) => e.stopPropagation()}>
-                    <IconButton onClick={(e) => handleMenuOpen(e, race)}>
+                    <IconButton onClick={(e) => handleMenuOpen(e, result)}>
                       <MoreVertIcon />
                     </IconButton>
                   </TableCell>
@@ -143,7 +138,7 @@ export default function RacesTable({ races, onEdit, onDelete }: Props) {
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}
         component="div"
-        count={races.length}
+        count={results.length}
         rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}

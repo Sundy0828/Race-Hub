@@ -16,6 +16,8 @@ import { useDeleteRace } from "@/graphql/hooks/useDeleteRace";
 import { useUpdateRace } from "@/graphql/hooks/useUpdateRace";
 import { Race } from "@/graphql/generated/graphqlTypes";
 import ConfirmDialog from "@/components/dialog/confirm/ConfirmDialog";
+import EmptyCard from "@/components/emptyCard/EmptyCard";
+import sharedStyles from "@/styles/shared.module.scss";
 
 export default function RacesPageClient({ yearId }: { yearId: number }) {
   const { user } = useFirebaseAuth();
@@ -91,7 +93,7 @@ export default function RacesPageClient({ yearId }: { yearId: number }) {
   if (racesError) return <ErrorState onRetry={() => racesRefetch()} />;
 
   return (
-    <div>
+    <div className={sharedStyles.maxSize}>
       <Box
         display="flex"
         justifyContent="space-between"
@@ -141,29 +143,11 @@ export default function RacesPageClient({ yearId }: { yearId: number }) {
           onDelete={handleDeleteRace}
         />
       ) : (
-        <Box
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          height="60vh"
-        >
-          <Card>
-            <CardContent>
-              <Typography variant="h5" gutterBottom>
-                No races have been created yet.
-              </Typography>
-              {user && (
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => setOpenDialog(true)}
-                >
-                  Add Race
-                </Button>
-              )}
-            </CardContent>
-          </Card>
-        </Box>
+        <EmptyCard
+          title="No races have been created yet."
+          onClick={() => setOpenDialog(true)}
+          buttonText="Add Race"
+        />
       )}
     </div>
   );

@@ -14,9 +14,5 @@ export async function generateMetadata(): Promise<Metadata> {
 export default function RacesPage() {
   const year: number = new Date().getFullYear();
 
-  return (
-    <div>
-      <RacesPageClient yearId={year} />
-    </div>
-  );
+  return <RacesPageClient yearId={year} />;
 }

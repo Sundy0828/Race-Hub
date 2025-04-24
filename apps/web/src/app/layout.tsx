@@ -29,14 +29,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Head>
-        <link rel="icon" href="/icons/racehub-icon.png" type="image/png" />
-      </Head>
       <body className={`${robotoSans.variable} ${robotoMono.variable}`}>
         <Providers>
-          <NavBar />
-          <div className="container">{children}</div>
-          <Footer />
+          <div className="layout-root">
+            <NavBar />
+            <main className="layout-main">
+              <div className="container">{children}</div>
+            </main>
+            <Footer />
+          </div>
         </Providers>
       </body>
     </html>
