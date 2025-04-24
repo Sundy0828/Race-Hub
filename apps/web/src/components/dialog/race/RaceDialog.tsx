@@ -8,47 +8,61 @@ import {
   Button,
   TextField,
 } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import LocationAutocomplete from "@/components/input/location/LocationAutoComplete";
 import { MutationStatus } from "@/hooks/useStatusFromMutation";
 import StatusButton from "@/components/button/statusButton/StatusButton";
 
 export type NewRaceData = {
   name: string;
-  date: string;
   location: string;
+  date: number;
 };
 
-type Props = {
+type RaceDialogProps = {
   open: boolean;
   onClose: () => void;
-  onSave: (race: NewRaceData) => void;
-  status?: MutationStatus;
+  onSave: (data: NewRaceData) => void;
+  status: MutationStatus;
+  race?: NewRaceData;
 };
 
-export default function AddRaceDialog({
+export default function RaceDialog({
   open,
   onClose,
   onSave,
   status,
-}: Props) {
-  const now = new Date();
-  const localDateStr = now.toLocaleDateString("sv-SE");
+  race,
+}: RaceDialogProps) {
+  const getLocalDateStr = (ms: number) => {
+    return new Date(ms).toLocaleDateString("sv-SE"); // "YYYY-MM-DD"
+  };
 
   const [name, setName] = useState("");
-  const [date, setDate] = useState(localDateStr);
   const [location, setLocation] = useState("");
-  const [isLocationValid, setIsLocationValid] = useState(false);
+  const [date, setDate] = useState("");
+  const [isLocationValid, setIsLocationValid] = useState(!!race);
+
+  useEffect(() => {
+    if (open) {
+      const now = new Date();
+      setName(race?.name || "");
+      setLocation(race?.location || "");
+      setDate(getLocalDateStr(race ? Number(race.date) : now.getTime()));
+      setIsLocationValid(!!race);
+    }
+  }, [race, open]);
 
   const handleSave = () => {
     if (name && date && isLocationValid) {
-      onSave({ name, date, location });
+      const time = Number(date);
+      onSave({ name, date: time, location });
     }
   };
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>Add Race</DialogTitle>
+      <DialogTitle>{race ? "Edit Race" : "Add Race"}</DialogTitle>
       <DialogContent>
         <TextField
           autoFocus

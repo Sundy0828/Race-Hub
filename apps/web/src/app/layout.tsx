@@ -35,7 +35,7 @@ export default function RootLayout({
       <body className={`${robotoSans.variable} ${robotoMono.variable}`}>
         <Providers>
           <NavBar />
-          {children}
+          <div className="container">{children}</div>
           <Footer />
         </Providers>
       </body>

@@ -60,7 +60,8 @@ export const resolvers = {
       args: { id: number },
       context: Context
     ) => {
-      return context.raceService.delete(args.id);
+      context.raceService.delete(args.id);
+      return true;
     },
     createResult: async (
       _parent: any,
@@ -81,7 +82,8 @@ export const resolvers = {
       args: { id: number },
       context: Context
     ) => {
-      return context.resultService.delete(args.id);
+      context.resultService.delete(args.id);
+      return true;
     },
   },
   Race: {

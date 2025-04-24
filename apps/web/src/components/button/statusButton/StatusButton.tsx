@@ -7,8 +7,9 @@ import { MutationStatus } from "@/hooks/useStatusFromMutation";
 type Props = {
   status?: MutationStatus;
   children: ReactNode;
-  onClick?: () => void;
+  onClick?: (...args: any[]) => void;
   disabled?: boolean;
+  colorOverride?: "primary" | "error" | "success";
 };
 
 export default function StatusButton({
@@ -16,6 +17,7 @@ export default function StatusButton({
   children,
   onClick,
   disabled,
+  colorOverride,
 }: Props) {
   const getEndIcon = () => {
     switch (status) {
@@ -31,6 +33,7 @@ export default function StatusButton({
   };
 
   const getColor = (): "primary" | "error" | "success" => {
+    if (colorOverride) return colorOverride;
     if (status === "error") return "error";
     if (status === "success") return "success";
     return "primary";

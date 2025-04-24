@@ -60,6 +60,7 @@ export default function RacesTable({ races, onEdit, onDelete }: Props) {
   };
 
   const handleEdit = () => {
+    console.log(menuRace);
     if (menuRace && onEdit) onEdit(menuRace);
     handleMenuClose();
   };
