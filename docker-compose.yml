@@ -8,10 +8,14 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
       POSTGRES_DB: race_hub_db
-    # volumes:
-    #   - ./db:/docker-entrypoint-initdb.d/
     networks:
       - racehub-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d race_hub_db -h localhost"]
+      interval: 30s
+      retries: 3
+      start_period: 10s
+      timeout: 10s
 
   backend:
     build:
@@ -21,24 +25,11 @@ services:
     environment:
       DATABASE_URL: postgres://admin:password@db:5432/race_hub_db
       REDIS_URL: redis://redis:6379
-      # FIREBASE_PRIVATE_KEY: ${FIREBASE_PRIVATE_KEY}
-      # FIREBASE_CLIENT_EMAIL: ${FIREBASE_CLIENT_EMAIL}
-      # FIREBASE_PROJECT_ID: ${FIREBASE_PROJECT_ID}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - racehub-network
-
-  # frontend:
-  #   build: ./apps/frontend
-  #   ports:
-  #     - "3000:3000"
-  #   environment:
-  #     REACT_APP_GRAPHQL_API: http://localhost:4000/graphql
-  #   depends_on:
-  #     - backend
-  #   networks:
-  #     - racehub-network
 
   redis:
     image: redis:latest
@@ -46,6 +37,12 @@ services:
       - "6379:6379"
     networks:
       - racehub-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      retries: 3
+      start_period: 10s
+      timeout: 10s
 
 networks:
   racehub-network:

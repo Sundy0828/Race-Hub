@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Card, CardContent, Typography, Button } from "@mui/material";
+import { Card, CardContent, Typography, Button, useTheme } from "@mui/material";
 
 type Props = {
   message?: string;
@@ -11,25 +11,32 @@ export default function ErrorCard({
   message = "Something went wrong.",
   onRetry,
 }: Props) {
+  const theme = useTheme();
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      height="60vh"
+    <Card
+      sx={{
+        width: "100%",
+        height: "100%",
+        boxShadow: "none",
+        backgroundColor: theme.palette.background.paper,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
     >
-      <Card sx={{ textAlign: "center", p: 3 }}>
-        <CardContent>
-          <Typography variant="h6" gutterBottom>
-            {message}
-          </Typography>
-          {onRetry && (
-            <Button variant="contained" color="primary" onClick={onRetry}>
-              Try Again
-            </Button>
-          )}
-        </CardContent>
-      </Card>
-    </Box>
+      <CardContent
+        sx={{
+          textAlign: "center",
+          padding: 3,
+        }}
+      >
+        <Typography variant="h6">{message}</Typography>
+        {onRetry && (
+          <Button variant="contained" color="primary" onClick={onRetry}>
+            Try Again
+          </Button>
+        )}
+      </CardContent>
+    </Card>
   );
 }
